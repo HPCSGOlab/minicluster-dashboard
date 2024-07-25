@@ -10,9 +10,7 @@ navbar = create_navbar()
 FA621 = "https://use.fontawesome.com/releases/v6.2.1/css/all.css"
 
 
-
-#incoporate the data
-#df = pd.read_csv('enter csvfile link here')
+#This app is multiple pages that work together to create the dashboard and an about page
 
 #create the dash app
 app = DashProxy(
@@ -23,16 +21,13 @@ app = DashProxy(
 )
 app.title = 'Minicluster Dashboard'
 
-#below is the composition of the app
+#thid is the composition of the app
 app.layout = [html.Div(children=[
                        html.Div([navbar, dash.page_container]),
                        ])]
 
-#python function to edit the csv data
 
 
-
-
-#this below runs the app with debug mode on
+#this runs the app with debug mode on
 if __name__ == '__main__':
     app.run_server(debug=True)

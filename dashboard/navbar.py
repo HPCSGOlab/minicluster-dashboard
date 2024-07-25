@@ -1,6 +1,7 @@
 from dash import Dash, html, dcc
 import dash_bootstrap_components as dbc
 
+#Created a navbar function that sets the navbar for each page of the web app
 def create_navbar():
     navbar = dbc.NavbarSimple(
         brand='Minicluster Dashboard', 

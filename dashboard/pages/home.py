@@ -32,6 +32,7 @@ def layout():
     ]),
  ]), 
 
+ #Here is where the graphs will be inserted and the callback intervall is every 2 seconds
  html.Div(className="row",children=[
     html.Div( className="col",children=[
     dcc.Graph(id ="ram-graph", className="col"),
@@ -65,6 +66,8 @@ def layout():
 
 
 ######################################################################################################################################################################
+
+#This get_data method that creates a websocket connection and receives data from it
 async def get_data():
     print("setting uri")
     uri = "ws://127.0.0.1:5000/random_data"
@@ -79,6 +82,10 @@ async def get_data():
     except Exception as e:
         print("Exception:", e)
 
+
+#Since the titan server is sending a list with two values, each values has 9 dictionaries. So I made 18 data frames. One for each dictionary
+#First half is for the RAM values
+#Create a dequeue x and y for each dataframe
 df1 = pd.DataFrame(columns=['time', 'value']) 
 x1 = deque(maxlen = 60)
 y1 = deque(maxlen = 60)
@@ -115,6 +122,7 @@ df9 = pd.DataFrame(columns=['time', 'value'])
 x9 = deque(maxlen = 60)
 y9 = deque(maxlen = 60)
 ##########################################################################
+#Second half is for the CPU values
 df11 = pd.DataFrame(columns=['time', 'value']) 
 x11 = deque(maxlen = 60)
 y11 = deque(maxlen = 60)
@@ -151,19 +159,24 @@ df19 = pd.DataFrame(columns=['time', 'value'])
 x19 = deque(maxlen = 60)
 y19 = deque(maxlen = 60)
 
+
+#this callback returns the two graphs and it takes in the callback interval of 2 seconds
 @callback(
  Output("ram-graph", "figure"),
  Output("cpu-graph", "figure"),
  [Input("graph-update4", "n_intervals")],
 )
+#This method is associated to run with every callback
 def update_graph4(n):
+    #calls the get_data functin and splits the list of two values into two separate variables for its corresponding dictionaries
     data = get_data()
-    all_data = asyncio.run(data) 
+    all_data = asyncio.run(data)    #This is the way to get the values to result in the dictionaries
     ram_data = all_data[0]
     cpu_data = all_data[1]
     
     print(cpu_data)
 
+    #call each dataframe variable, and then add each dictionary to its corresponding data frame
     global df1
     df1 = pd.concat([df1, pd.DataFrame([ram_data[0]])], ignore_index=True)
     global df2
@@ -204,6 +217,7 @@ def update_graph4(n):
     df19 = pd.concat([df19, pd.DataFrame([cpu_data[8]])], ignore_index=True)
 
   
+   #Take time from the dictionary and add it to each dictionaries corresponding deque object. Do the same for the value
     a1 = df1['time'].iloc[-1]
     b1 = df1['value'].iloc[-1]
     x1.append(a1)
@@ -296,7 +310,8 @@ def update_graph4(n):
     y19.append((b19))
 
 
-
+    #Made trace1, Which displays only one titans RAM uage line graph
+    #made trace11 which displays only one titans CPU utilization line graph
     trace1 = go.Scatter (
         x = list(x1),
         y = list(y1),
@@ -311,6 +326,8 @@ def update_graph4(n):
         name="titan 1",
         line={"color": "rgb(253, 50, 22)", "width" : 2},
     )
+
+    #Figure 1 is the RAM graph, figure 2 is the CPU graph. Trace 1 is the first line for the RAM graph and Trace 11 is the first line for the CPU graph
     fig1 = go.Figure(
         data = [trace1],
         layout = go.Layout()
@@ -326,6 +343,7 @@ def update_graph4(n):
 
     print(y11)
     
+    #Return the graphs
     return fig1,fig2
 
 
