@@ -4,6 +4,7 @@ import plotly.graph_objs as go
 import pandas as pd
 import websockets
 import json
+import pickle
 import asyncio
 from dash_extensions import WebSocket
 from dash_extensions.enrich import html, dcc, Output, Input, DashProxy
@@ -70,15 +71,17 @@ def layout():
 #This get_data method that creates a websocket connection and receives data from it
 async def get_data():
     print("setting uri")
-    uri = "ws://127.0.0.1:9877/random_data"
+    uri = "ws://127.0.0.1:5000/random_data"
     try:
         async with websockets.connect(uri) as websocket:
             print("websocket connected")
             while True:
                 print("recving data")
                 data = await websocket.recv()
+                data2 = pickle.loads(data)
                 print("data recvd")
-                return json.loads(data)
+                data3 = json.dumps(data2)
+                return json.loads(data3)
     except Exception as e:
         print("Exception:", e)
 

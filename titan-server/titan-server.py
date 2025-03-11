@@ -3,7 +3,8 @@ import random
 import time
 import pickle
 import re
-from quart import Quart
+import asyncio
+from quart import Quart, websocket
 
 #Quart is just a framework to create an app. Acts as the structure of this program
 app = Quart(__name__)
@@ -109,32 +110,37 @@ class Parse:
 
 
     # My server class script 
-    def server(self):
+    @app.websocket("/random_data")
+    #async def server(self):
+    async def server():
 
-        #Create socket and socket connection
-        client_socket = socket.socket()
-        client_socket.connect(('127.0.0.1', 8000))
+        # #Create socket and socket connection
+        # client_socket = socket.socket()
+        # client_socket.connect(('127.0.0.1', 5000))
 
         #Have a loop that continuously takes in an input (which will be the tegrastats from the titans)
         while True:
-            data = input()
+            # data = input()
 
-            #call the parse data function
-            output_1 = self.parse_data(data)
+            # #call the parse data function
+            # output_1 = self.parse_data(data)
 
-            #calculate the average CPU utilization percentage. add the 6 core values and divide it by 6
-            cpu0 = output_1['CPU 0 Load (%)']
-            cpu1 = output_1['CPU 1 Load (%)']
-            cpu2 = output_1['CPU 2 Load (%)']
-            cpu3 = output_1['CPU 3 Load (%)']
-            cpu4 = output_1['CPU 4 Load (%)']
-            cpu5 = output_1['CPU 5 Load (%)']
-            avg_cpu = (float(cpu0) + float(cpu1) + float(cpu2) + float(cpu3) + float(cpu4) + float(cpu5))/6
+            # #calculate the average CPU utilization percentage. add the 6 core values and divide it by 6
+            # cpu0 = output_1['CPU 0 Load (%)']
+            # cpu1 = output_1['CPU 1 Load (%)']
+            # cpu2 = output_1['CPU 2 Load (%)']
+            # cpu3 = output_1['CPU 3 Load (%)']
+            # cpu4 = output_1['CPU 4 Load (%)']
+            # cpu5 = output_1['CPU 5 Load (%)']
+            # avg_cpu = (float(cpu0) + float(cpu1) + float(cpu2) + float(cpu3) + float(cpu4) + float(cpu5))/6
 
 
             #Create a list of dictionaries. Each dictioary will be the RAM value and timestamp for each titan. Since we only get from one titan right now,
             # the rest are randomly generated numbers
-            output1 = {'time': time.strftime('%I:%M:%S'), 'value' : output_1['Used RAM (MB)']}
+
+            #output1 = {'time': time.strftime('%I:%M:%S'), 'value' : output_1['Used RAM (MB)']}
+            output1 = {'time': time.strftime('%I:%M:%S'), 'value' : random.uniform(0.1, 0.3) }
+
             #Randomly RAM generated values for the remaining titans
             output2 = {'time': time.strftime('%I:%M:%S'), 'value' : random.uniform(0.3, 0.4) }
             output3 = {'time': time.strftime('%I:%M:%S'), 'value' : random.uniform(0.3, 0.4) }
@@ -149,7 +155,10 @@ class Parse:
 
             #Create a list of dictionaries. Each dictioary will be the CPU value and timestamp for each titan. Since we only get from one titan right now,
             # the rest are randomly generated numbers
-            outputcpu1 = {'time': time.strftime('%I:%M:%S'), 'value' : avg_cpu}
+           
+            #outputcpu1 = {'time': time.strftime('%I:%M:%S'), 'value' : avg_cpu}
+            outputcpu1 = {'time': time.strftime('%I:%M:%S'), 'value' : random.uniform(0.1, 0.3) }
+           
             #Randomly CPU generated values for the remaining titans
             outputcpu2 = {'time': time.strftime('%I:%M:%S'), 'value' : random.uniform(0.3, 0.4) }
             outputcpu3 = {'time': time.strftime('%I:%M:%S'), 'value' : random.uniform(0.3, 0.4) }
@@ -164,14 +173,17 @@ class Parse:
 
             #Organize the two lists of dictionarites into one list. Covert the data with pickle and send it through the socket. 
             data_to_send = [ram_to_send, cpu_to_send]
+            print(data_to_send)
             msg = pickle.dumps(data_to_send)
-            client_socket.send(msg)
-            time.sleep(1)
+            # client_socket.send(msg)
+            await websocket.send(msg)
+            await asyncio.sleep(1)
         
 
 #This runs the quart app and I set the port to 8080
 if __name__ == '__main__':
     interval = 1000
-    parser = Parse(interval)
-    parser.server()
-    app.run(port=8080)
+    # parser = Parse(interval)
+    # parser.server()
+   
+    app.run(port=5000)
