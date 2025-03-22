@@ -111,8 +111,8 @@ class Parse:
 
     # My server class script 
     @app.websocket("/random_data")
-    #async def server(self):
-    async def server():
+    async def server(self):
+    #async def server():
 
         # #Create socket and socket connection
         # client_socket = socket.socket()
@@ -120,26 +120,26 @@ class Parse:
 
         #Have a loop that continuously takes in an input (which will be the tegrastats from the titans)
         while True:
-            # data = input()
+            data = input()
 
             # #call the parse data function
-            # output_1 = self.parse_data(data)
+            output_1 = self.parse_data(data)
 
             # #calculate the average CPU utilization percentage. add the 6 core values and divide it by 6
-            # cpu0 = output_1['CPU 0 Load (%)']
-            # cpu1 = output_1['CPU 1 Load (%)']
-            # cpu2 = output_1['CPU 2 Load (%)']
-            # cpu3 = output_1['CPU 3 Load (%)']
-            # cpu4 = output_1['CPU 4 Load (%)']
-            # cpu5 = output_1['CPU 5 Load (%)']
-            # avg_cpu = (float(cpu0) + float(cpu1) + float(cpu2) + float(cpu3) + float(cpu4) + float(cpu5))/6
+            cpu0 = output_1['CPU 0 Load (%)']
+            cpu1 = output_1['CPU 1 Load (%)']
+            cpu2 = output_1['CPU 2 Load (%)']
+            cpu3 = output_1['CPU 3 Load (%)']
+            cpu4 = output_1['CPU 4 Load (%)']
+            cpu5 = output_1['CPU 5 Load (%)']
+            avg_cpu = (float(cpu0) + float(cpu1) + float(cpu2) + float(cpu3) + float(cpu4) + float(cpu5))/6
 
 
             #Create a list of dictionaries. Each dictioary will be the RAM value and timestamp for each titan. Since we only get from one titan right now,
             # the rest are randomly generated numbers
 
-            #output1 = {'time': time.strftime('%I:%M:%S'), 'value' : output_1['Used RAM (MB)']}
-            output1 = {'time': time.strftime('%I:%M:%S'), 'value' : random.uniform(0.1, 0.3) }
+            output1 = {'time': time.strftime('%I:%M:%S'), 'value' : output_1['Used RAM (MB)']}
+            #output1 = {'time': time.strftime('%I:%M:%S'), 'value' : random.uniform(0.1, 0.3) }
 
             #Randomly RAM generated values for the remaining titans
             output2 = {'time': time.strftime('%I:%M:%S'), 'value' : random.uniform(0.3, 0.4) }
@@ -156,8 +156,8 @@ class Parse:
             #Create a list of dictionaries. Each dictioary will be the CPU value and timestamp for each titan. Since we only get from one titan right now,
             # the rest are randomly generated numbers
            
-            #outputcpu1 = {'time': time.strftime('%I:%M:%S'), 'value' : avg_cpu}
-            outputcpu1 = {'time': time.strftime('%I:%M:%S'), 'value' : random.uniform(0.1, 0.3) }
+            outputcpu1 = {'time': time.strftime('%I:%M:%S'), 'value' : avg_cpu}
+           # outputcpu1 = {'time': time.strftime('%I:%M:%S'), 'value' : random.uniform(0.1, 0.3) }
            
             #Randomly CPU generated values for the remaining titans
             outputcpu2 = {'time': time.strftime('%I:%M:%S'), 'value' : random.uniform(0.3, 0.4) }
@@ -183,7 +183,7 @@ class Parse:
 #This runs the quart app and I set the port to 8080
 if __name__ == '__main__':
     interval = 1000
-    # parser = Parse(interval)
-    # parser.server()
+    parser = Parse(interval)
+    parser.server()
    
     app.run(port=5000)
