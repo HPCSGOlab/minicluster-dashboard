@@ -23,4 +23,4 @@ This project was created on VSCode and it uses mainly python and its libraries.
    2. Pull up the terminal and type in the command: tegrastats | python3 titan-server.py
       
  - File described:
-   - titan-server.py: takes in the tegrastats from the titans and is parsed and send through a socket to the middle_man program. 
+   - titan-server.py: takes in the tegrastats from the titans and is parsed and send through a websocket to the home server program. 
