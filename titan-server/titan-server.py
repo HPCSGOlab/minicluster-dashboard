@@ -4,6 +4,7 @@ import time
 import pickle
 import re
 import asyncio
+import json
 from quart import Quart, websocket
 
 #Quart is just a framework to create an app. Acts as the structure of this program
@@ -106,13 +107,8 @@ class Parse:
         self.parse_vdds(lookup_table, vdds) if vdds else None
 
         return lookup_table
-
-
-
-    # My server class script 
-    @app.websocket("/random_data")
-    async def server(self):
-    #async def server():
+    
+    async def server(self, websocket):
 
         # #Create socket and socket connection
         # client_socket = socket.socket()
@@ -174,16 +170,20 @@ class Parse:
             #Organize the two lists of dictionarites into one list. Covert the data with pickle and send it through the socket. 
             data_to_send = [ram_to_send, cpu_to_send]
             print(data_to_send)
-            msg = pickle.dumps(data_to_send)
+            msg = json.dumps(data_to_send)
             # client_socket.send(msg)
             await websocket.send(msg)
             await asyncio.sleep(1)
         
+    @app.websocket("/random_data")
+    async def run_server():
+        parser = Parse(interval=1000)
+        await parser.server(websocket)
 
-#This runs the quart app and I set the port to 8080
+#This runs the quart app and I set the port to 8080th
 if __name__ == '__main__':
     interval = 1000
-    parser = Parse(interval)
-    parser.server()
+    # parser = Parse(interval)
+    # parser.server()
    
-    app.run(port=5000)
+    app.run(port=9876)

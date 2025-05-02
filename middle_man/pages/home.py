@@ -71,7 +71,7 @@ def layout():
 #This get_data method that creates a websocket connection and receives data from it
 async def get_data():
     print("setting uri")
-    uri = "ws://127.0.0.1:5000/random_data"
+    uri = "ws://127.0.0.1:9877/random_data"
     try:
         async with websockets.connect(uri) as websocket:
             print("websocket connected")
