@@ -11,7 +11,7 @@ This project was created on VSCode and it uses mainly python and its libraries.
   - It is a multipage application and to run it -- type this command into the terminal: python3 main-server.py
 
  - File described:
-   - main-server.py: Creates the dash app, sets up the composion, and runs it. 
+   - main-server.py: Creates the dash app, sets up the layout, and runs it. 
    - navbar.py: creates a general format for the navigation bar that is displayed throughout the webpage
    - pages folder:
      - home.py: takes in data from the titan-server program through a websocket, creates the layout of the home page, includes the graphs, and the dataframes that store the data.
